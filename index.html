@@ -1,759 +1,1374 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="theme-color" content="#9b76a7">
-<meta name="description" content="Kado by Visyaa — interactive digital gift builder.">
-<title>Kado by Visyaa — A Little Place Made For You ♡</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Comfortaa:wght@500;700&family=Dancing+Script:wght@700&family=Fredoka:wght@400;600&family=Gaegu:wght@700&family=Itim&family=Mali:wght@600&family=Pacifico&family=Patrick+Hand&family=Playfair+Display:ital,wght@0,600;1,400&family=Poppins:wght@400;500;600;700&family=Quicksand:wght@500;700&family=Sacramento&display=swap" rel="stylesheet">
-
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-<style>
-:root{
-  --bg:#fff7fb;
-  --text:#5d5061;
-  --primary:#9b76a7;
-  --accent:#e8b5ca;
-  --card:#fff;
-  --radius:18px;
-  --font:'Poppins',sans-serif
-}
-
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0
-}
-
-body{
-  font-family:var(--font);
-  background:#f1eaf4;
-  color:var(--text);
-  overflow:hidden;
-  min-height:100vh
-}
-
-/* RECEIVER DIRECT MODE STYLING */
-body.receiver-mode .top,
-body.receiver-mode .sidebar {
-  display: none !important;
-}
-
-body.receiver-mode .app {
-  grid-template-columns: 1fr !important;
-  height: 100vh !important;
-}
-
-body.receiver-mode .previewArea {
-  padding: 0 !important;
-  background: transparent !important;
-}
-
-body.receiver-mode .previewWrap {
-  max-width: 100% !important;
-}
-
-body.receiver-mode .gift {
-  min-height: 100vh !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-}
-
-body.receiver-mode .previewTop {
-  display: none !important;
-}
-
-button,input,textarea,select{
-  font:inherit
-}
-
-button{
-  cursor:pointer;
-  border:0
-}
-
-input,textarea,select{
-  width:100%;
-  border:1px solid #e5d9e8;
-  border-radius:10px;
-  padding:9px 10px;
-  background:#fff;
-  color:var(--text);
-  outline:0;
-  margin-bottom:9px;
-  font-size:12px
-}
-
-input:focus,
-textarea:focus,
-select:focus{
-  border-color:#b58ac0;
-  box-shadow:0 0 0 3px #b58ac01a
-}
-
-textarea{
-  min-height:70px;
-  resize:vertical
-}
-
-.top{
-  height:60px;
-  background:#fff;
-  border-bottom:1px solid #eadfeb;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 18px;
-  position:relative;
-  z-index:50
-}
-
-.brand{
-  font-weight:700;
-  color:#866394;
-  font-size:14px;
-  display:flex;
-  align-items:center;
-  gap:8px
-}
-
-.save{
-  font-size:10px;
-  background:#f4edf6;
-  padding:4px 8px;
-  border-radius:20px
-}
-
-.actions{
-  display:flex;
-  gap:7px
-}
-
-.btn{
-  padding:8px 12px;
-  border-radius:10px;
-  font-size:11px;
-  font-weight:700;
-  background:#f4edf7;
-  color:#76577d
-}
-
-.btn.primary{
-  background:var(--primary);
-  color:white
-}
-
-.btn.green{
-  background:#5da486;
-  color:#fff
-}
-
-.btn.danger{
-  background:#fff0f3;
-  color:#c46b7c
-}
-
-.app{
-  display:grid;
-  grid-template-columns:minmax(360px,450px) minmax(0,1fr);
-  height:calc(100vh - 60px);
-  min-height:0
-}
-
-.sidebar{
-  background:#fff;
-  border-right:1px solid #eadfeb;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  min-width:0;
-  min-height:0
-}
-
-.tabs{
-  display:flex;
-  overflow-x:auto;
-  background:#faf5fc;
-  border-bottom:1px solid #eadfeb
-}
-
-.tabs button{
-  padding:12px 13px;
-  background:transparent;
-  color:#78667d;
-  font-size:10px;
-  font-weight:700;
-  white-space:nowrap;
-  border-bottom:2px solid transparent
-}
-
-.tabs button.active{
-  color:#8d6798;
-  border-top:2px solid #8d6798;
-  border-bottom-color:transparent;
-  background:#fff;
-  margin-top:-1px
-}
-
-.pane{
-  display:none;
-  padding:16px;
-  overflow:auto
-}
-
-.pane.active{
-  display:block
-}
-
-.title{
-  font-size:10px;
-  font-weight:800;
-  text-transform:uppercase;
-  letter-spacing:.5px;
-  color:#745a7b;
-  margin:12px 0 8px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center
-}
-
-.card{
-  background:#faf6fb;
-  border:1px solid #eee2f0;
-  border-radius:12px;
-  padding:10px;
-  margin-bottom:9px
-}
-
-.mini{
-  font-size:10px;
-  color:#8c7c90;
-  line-height:1.45
-}
-
-.grid2{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px
-}
-
-.library{
-  display:grid;
-  gap:7px
-}
-
-.libbtn{
-  background:#f7f0f9;
-  border:1px solid #eaddec;
-  border-radius:10px;
-  padding:9px;
-  text-align:left;
-  color:#715877;
-  font-size:11px;
-  font-weight:600
-}
-
-.libbtn:hover{
-  background:#eee1f1
-}
-
-.search{
-  margin-bottom:8px
-}
-
-.previewArea{
-  padding:20px;
-  overflow:auto;
-  background:#e9deed;
-  min-width:0;
-  min-height:0
-}
-
-.previewTop{
-  max-width:900px;
-  margin:0 auto 9px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center
-}
-
-.previewLabel{
-  font-size:11px;
-  color:#806d84
-}
-
-.previewWrap{
-  max-width:900px;
-  margin:auto;
-  transition:.25s
-}
-
-.previewWrap.mobile{
-  max-width:375px
-}
-
-.gift{
-  min-height:850px;
-  background:var(--bg);
-  color:var(--text);
-  border-radius:22px;
-  overflow:hidden;
-  position:relative;
-  box-shadow:0 18px 45px #64466c1c
-}
-
-.float{
-  position:absolute;
-  inset:0;
-  overflow:hidden;
-  pointer-events:none;
-  z-index:1
-}
-
-.p{
-  position:absolute;
-  bottom:-50px;
-  animation:rise linear infinite;
-  opacity:.7;
-  filter:drop-shadow(0 2px 4px #0001)
-}
-
-@keyframes rise{
-  0%{
-    transform:translateY(0) rotate(0);
-    opacity:0
-  }
-
-  15%{
-    opacity:.7
-  }
-
-  100%{
-    transform:translateY(-110vh) rotate(260deg);
-    opacity:0
-  }
-}
-
-.hero{
-  min-height:390px;
-  padding:55px 22px 40px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  position:relative;
-  z-index:2
-}
-
-.eyebrow{
-  font-size:11px;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  opacity:.75;
-  margin-bottom:10px
-}
-
-.hero h1{
-  font-size:clamp(28px,5vw,46px);
-  line-height:1.2;
-  margin-bottom:12px
-}
-
-.hero p{
-  max-width:530px;
-  font-size:13px;
-  line-height:1.7
-}
-
-.open{
-  margin-top:22px;
-  padding:12px 23px;
-  border-radius:30px;
-  background:var(--primary);
-  color:white;
-  font-weight:700;
-  box-shadow:0 8px 25px #0002;
-  animation:pulse 2s infinite
-}
-
-@keyframes pulse{
-  50%{
-    transform:scale(1.04)
-  }
-}
-
-.section{
-  padding:30px 18px;
-  text-align:center;
-  position:relative;
-  z-index:2;
-  background:#ffffff80;
-  border-top:1px solid #ffffff99;
-  backdrop-filter:blur(5px)
-}
-
-.section h2{
-  font-size:18px;
-  color:var(--primary);
-  margin-bottom:12px
-}
-
-.block{
-  max-width:600px;
-  margin:10px auto;
-  background:var(--card);
-  border-radius:var(--radius);
-  padding:17px;
-  box-shadow:0 6px 20px #0000000b
-}
-
-.polaroid{
-  display:inline-block;
-  background:#fff;
-  padding:11px 11px 24px;
-  box-shadow:0 10px 25px #0002;
-  transform:rotate(-2deg);
-  max-width:280px
-}
-
-.polaroid img{
-  width:100%;
-  height:210px;
-  object-fit:cover
-}
-
-.hand{
-  font-family:'Caveat',cursive;
-  font-size:18px
-}
-
-.scratch{
-  height:130px;
-  background:#c8c8c8;
-  border-radius:12px;
-  display:grid;
-  place-items:center;
-  cursor:pointer;
-  position:relative;
-  overflow:hidden
-}
-
-.scratch.cover:after{
-  content:'🖐️ TAP TO REVEAL';
-  position:absolute;
-  inset:0;
-  display:grid;
-  place-items:center;
-  background:#b9b9b9;
-  color:#555;
-  font-weight:800
-}
-
-.responseBox{
-  background:#fff;
-  border:1px solid #eaddea;
-  border-radius:14px;
-  padding:14px;
-  max-width:600px;
-  margin:0 auto;
-  text-align:left
-}
-
-.responseBox h3{
-  text-align:center;
-  color:var(--primary);
-  margin-bottom:8px
-}
-
-.responseActions{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap
-}
-
-.responseActions button{
-  flex:1;
-  min-width:120px
-}
-
-.footer{
-  padding:35px 20px;
-  text-align:center;
-  position:relative;
-  z-index:2
-}
-</style>
-</head>
+<html lang="id" style="--bg-primary: #fff0f5; --primary: #ff769c; --text-color: #4a3e43;"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KadoDigital ♡ Digital Gift &amp; Scrapbook Maker</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&amp;family=Dancing+Script:wght@600&amp;family=Fredoka:wght@400;500;600&amp;family=Gaegu:wght@400;700&amp;family=Indie+Flower&amp;family=Mali:ital,wght@0,400;0,600;1,400&amp;family=Patrick+Hand&amp;family=Playfair+Display:ital,wght@0,600;1,400&amp;family=Poppins:wght@300;400;500;600;700&amp;family=Press+Start+2P&amp;family=Sacramento&amp;family=Shantell+Sans:ital,wght@0,400;0,600;1,400&amp;family=VT323&amp;display=swap" rel="stylesheet">
+    <!-- FontAwesome for UI Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" crossorigin="anonymous"></script>
+    <!-- QRCode.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous"></script>
+
+    <style>
+        /* === BASE STYLES & RESET === */
+        :root {
+            --bg-primary: #fff0f5;
+            --bg-card: #ffffff;
+            --primary: #ff769c;
+            --primary-hover: #ff5281;
+            --accent: #ffd1dc;
+            --text-color: #4a3e43;
+            --border-color: #ffd6e0;
+            --font-family: 'Fredoka', cursive, sans-serif;
+            --shadow-soft: 0 10px 30px rgba(255, 118, 156, 0.15);
+            --radius-main: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-primary);
+            color: var(--text-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Input fields and editable elements should allow text selection */
+        input, textarea, [contenteditable="true"] {
+            user-select: text !important;
+            -webkit-user-select: text !important;
+        }
+
+        button {
+            cursor: pointer;
+            font-family: inherit;
+            border: none;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        /* App Container Layout */
+        #app-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* === TOP NAVBAR === */
+        .navbar {
+            height: 60px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 100;
+        }
+
+        .logo-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #f0e6ed;
+            color: #665261;
+        }
+        .btn-secondary:hover {
+            background: #e4d3df;
+        }
+
+        /* === EDITOR LAYOUT === */
+        .editor-workspace {
+            flex: 1;
+            display: flex;
+            height: calc(100vh - 60px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Sidebar Tools Navigation */
+        .sidebar-nav {
+            width: 80px;
+            background: white;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 15px;
+            gap: 15px;
+            z-index: 90;
+        }
+
+        .nav-item {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            color: #88727d;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-item i {
+            font-size: 1.3rem;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        /* Sidebar Sub-panel */
+        .sidebar-panel {
+            width: 320px;
+            background: white;
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 80;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Canvas Workspace Area */
+        .canvas-area {
+            flex: 1;
+            background: #f7f3f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Device Preview Canvas Frame */
+        .gift-stage-frame {
+            width: 380px;
+            height: 680px;
+            background: var(--bg-primary);
+            border-radius: 36px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15), 0 0 0 12px #2d2327;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        /* Dynamic Gift Canvas Page Container */
+        .gift-page {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+
+        /* Canvas Elements */
+        .canvas-element {
+            position: relative;
+            margin-bottom: 15px;
+            cursor: move;
+            border: 2px transparent dashed;
+            transition: border 0.2s;
+            border-radius: 8px;
+        }
+
+        .canvas-element:hover, .canvas-element.active {
+            border-color: var(--primary);
+        }
+
+        .element-controls {
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            display: none;
+            gap: 5px;
+            z-index: 10;
+        }
+
+        .canvas-element:hover .element-controls, .canvas-element.active .element-controls {
+            display: flex;
+        }
+
+        .btn-icon-tiny {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Bottom Page Navigator */
+        .page-bar {
+            position: absolute;
+            bottom: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            padding: 8px 16px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow-soft);
+            z-index: 70;
+        }
+
+        .page-dot {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .page-dot.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* === THEMES & PRESETS GRID === */
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .theme-card {
+            border-radius: 12px;
+            padding: 12px;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            border: 2px solid transparent;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+
+        .theme-card:hover {
+            transform: scale(1.03);
+            border-color: var(--primary);
+        }
+
+        .theme-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* === FONT PICKER & TEXT === */
+        .font-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .font-item {
+            padding: 10px 15px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .font-item:hover {
+            background: var(--accent);
+        }
+
+        /* === EMOJI & STICKER GRID === */
+        .search-box {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 12px;
+            outline: none;
+        }
+
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .emoji-item {
+            font-size: 1.6rem;
+            text-align: center;
+            padding: 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #faf7f9;
+        }
+
+        .emoji-item:hover {
+            background: var(--accent);
+            transform: scale(1.2);
+        }
+
+        /* === PHOTO TEMPLATES === */
+        .photo-template-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .photo-card-preview {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            background: white;
+        }
+
+        .photo-card-preview:hover {
+            border-color: var(--primary);
+            background: var(--accent);
+        }
+
+        .polaroid-frame {
+            background: white;
+            padding: 12px 12px 25px 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            transform: rotate(-2deg);
+            position: relative;
+        }
+
+        .polaroid-frame img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 2px;
+        }
+
+        .polaroid-caption {
+            font-family: 'Caveat', cursive;
+            font-size: 1.2rem;
+            text-align: center;
+            margin-top: 10px;
+            color: #333;
+        }
+
+        /* Paper Tape Effect */
+        .tape-effect {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%) rotate(2deg);
+            width: 70px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            border-left: 2px dashed rgba(0,0,0,0.1);
+            border-right: 2px dashed rgba(0,0,0,0.1);
+            backdrop-filter: blur(2px);
+            z-index: 5;
+        }
+
+        /* === LETTERS & GAMES GRID === */
+        .template-list-item {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .template-list-item:hover {
+            border-color: var(--primary);
+            background: var(--accent);
+        }
+
+        .template-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        /* Interactive Envelope Letter */
+        .envelope-container {
+            width: 100%;
+            background: #fff8eb;
+            border: 2px solid #e3d5c1;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            font-family: 'Patrick Hand', cursive;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Games Container UI */
+        .game-box {
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            border: 2px solid var(--border-color);
+            text-align: center;
+        }
+
+        .game-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .game-btn {
+            padding: 10px;
+            border-radius: 10px;
+            background: #f7f3f6;
+            border: 1px solid var(--border-color);
+            font-weight: 500;
+        }
+
+        .game-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* === RECIPIENT MODE & UNBOXING STAGE === */
+        #recipient-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--bg-primary);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Floating Gift Box Unboxing Animation */
+        .gift-box-wrapper {
+            position: relative;
+            cursor: pointer;
+            text-align: center;
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .gift-box {
+            width: 140px;
+            height: 140px;
+            background: #ff5281;
+            border-radius: 16px;
+            position: relative;
+            margin: 0 auto 20px;
+            box-shadow: 0 15px 35px rgba(255, 82, 129, 0.4);
+        }
+
+        /* Ribbons */
+        .gift-box::before {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 100%;
+            background: #ffd1dc;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .gift-box::after {
+            content: '';
+            position: absolute;
+            height: 25px;
+            width: 100%;
+            background: #ffd1dc;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .gift-bow {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3rem;
+            color: #ffd1dc;
+            z-index: 2;
+        }
+
+        .unboxing-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-top: 15px;
+        }
+
+        /* Particle Overlay Container */
+        #particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .sidebar-panel {
+                position: fixed;
+                bottom: 60px;
+                left: 0;
+                width: 100vw;
+                height: 280px;
+                border-top: 1px solid var(--border-color);
+                box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            }
+            .sidebar-nav {
+                width: 100vw;
+                height: 60px;
+                flex-direction: row;
+                justify-content: space-around;
+                padding-top: 0;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+            }
+            .nav-item {
+                height: 100%;
+            }
+            .gift-stage-frame {
+                width: 100vw;
+                height: calc(100vh - 70px);
+                border-radius: 0;
+                box-shadow: none;
+            }
+            .page-bar {
+                bottom: 75px;
+            }
+        }
+
+        /* Custom Modal System */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-card {
+            background: white;
+            width: 90%;
+            max-width: 450px;
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+    </style>
+<style id="custom-cursor" type="text/css">body button, body [type='button'], body input[type='reset'], body input[type='submit'], body [role="button"], ::-webkit-search-cancel-button, ::-webkit-search-decoration, ::-webkit-scrollbar-button, ::-webkit-file-upload-button, [role^=button], .cc_pointer, [type="search"]::-webkit-search-cancel-button, a, select, [type="search"]::-webkit-search-decoration, .paper-button, .ytp-progress-bar-container, input[type=submit], :link, :visited, a > *, img,  ::-webkit-scrollbar-button, .ogdlpmhglpejoiomcodnpjnfgcpmgale_pointer, ::-webkit-file-upload-button, .ytp-volume-panel, #myogdlpmhglpejoiomcodnpjnfgcpmgale .icon, body .custom-cursor-on-hover {cursor: url("data:image/png;base64,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") 10 2, pointer !important;} html,body,body select,body .custom-cursor-default-hover {cursor: url("data:image/png;base64,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") 5 2, auto !important;}</style></head>
 <body>
 
-<div class="top">
-  <div class="brand">
-    <span>✨ Kado by Visyaa</span>
-    <span class="save">Interactive Builder</span>
-  </div>
-  <div class="actions">
-    <button class="btn green" onclick="triggerConfetti()">🎉 Celebration</button>
-    <button class="btn primary" onclick="copyNetlifyLink()">🔗 Salin Link Kado untuk Penerima</button>
-  </div>
+<div id="app-container">
+    <!-- Particle Canvas for Floating Hearts, Sparkles, Balloons -->
+    <canvas id="particle-canvas" width="948" height="828"></canvas>
+
+    <!-- TOP TOOLBAR NAVBAR -->
+    <nav class="navbar" id="main-navbar">
+        <div class="logo-title">
+            <i class="fa-solid fa-gift"></i> KadoDigital ♡
+        </div>
+        <div class="nav-actions">
+            <button class="btn btn-secondary" onclick="appState.saveDraft()" fdprocessedid="b3p5g"><i class="fa-solid fa-floppy-disk"></i> Simpan Draft</button>
+            <button class="btn btn-secondary" onclick="appState.togglePreview()" fdprocessedid="mqacox"><i class="fa-solid fa-eye"></i> Preview</button>
+            <button class="btn btn-primary" onclick="appState.openPublishModal()" fdprocessedid="bzlvxj"><i class="fa-solid fa-paper-plane"></i> Publish &amp; Share</button>
+        </div>
+    </nav>
+
+    <!-- MAIN CREATOR WORKSPACE -->
+    <div class="editor-workspace" id="editor-workspace">
+        
+        <!-- SIDEBAR NAVIGATION ICON BAR -->
+        <div class="sidebar-nav">
+            <div class="nav-item" onclick="appState.switchTab('theme')">
+                <i class="fa-solid fa-palette"></i>
+                <span>Desain</span>
+            </div>
+            <div class="nav-item custom-cursor-on-hover" onclick="appState.switchTab('font')">
+                <i class="fa-solid fa-font"></i>
+                <span>Teks</span>
+            </div>
+            <div class="nav-item custom-cursor-on-hover active" onclick="appState.switchTab('emoji')">
+                <i class="fa-solid fa-face-smile-beam"></i>
+                <span class="custom-cursor-on-hover">Stiker</span>
+            </div>
+            <div class="nav-item" onclick="appState.switchTab('photo')">
+                <i class="fa-solid fa-image"></i>
+                <span>Foto</span>
+            </div>
+            <div class="nav-item" onclick="appState.switchTab('letter')">
+                <i class="fa-solid fa-envelope-open-text"></i>
+                <span>Surat</span>
+            </div>
+            <div class="nav-item" onclick="appState.switchTab('game')">
+                <i class="fa-solid fa-gamepad"></i>
+                <span>Game</span>
+            </div>
+            <div class="nav-item" onclick="appState.switchTab('animation')">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>Efek</span>
+            </div>
+            <div class="nav-item" onclick="appState.switchTab('music')">
+                <i class="fa-solid fa-music"></i>
+                <span>Musik</span>
+            </div>
+        </div>
+
+        <!-- SIDEBAR CONTROLLER SUB-PANEL -->
+        <div class="sidebar-panel" id="sidebar-panel">
+                    <div class="panel-title">Stiker &amp; Emoji Library</div>
+                    <input type="text" class="search-box" placeholder="Cari simbol / emoji..." onkeyup="appState.filterEmojis(this.value)" fdprocessedid="048quys">
+                    <div class="emoji-grid" id="emoji-grid-box">
+                        
+                            <div class="emoji-item custom-cursor-on-hover" onclick="appState.addElement({type:'text', text:'♡', size:'2.5rem', align:'center'})">♡</div>
+                        
+                            <div class="emoji-item custom-cursor-on-hover" onclick="appState.addElement({type:'text', text:'♥', size:'2.5rem', align:'center'})">♥</div>
+                        
+                            <div class="emoji-item custom-cursor-on-hover" onclick="appState.addElement({type:'text', text:'ღ', size:'2.5rem', align:'center'})">ღ</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'ꨄ', size:'2.5rem', align:'center'})">ꨄ</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'୨୧', size:'2.5rem', align:'center'})">୨୧</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'꒰ა ♡ ໒꒱', size:'2.5rem', align:'center'})">꒰ა ♡ ໒꒱</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'✦', size:'2.5rem', align:'center'})">✦</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'✧', size:'2.5rem', align:'center'})">✧</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'⋆', size:'2.5rem', align:'center'})">⋆</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'˚', size:'2.5rem', align:'center'})">˚</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'𐙚', size:'2.5rem', align:'center'})">𐙚</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'❀', size:'2.5rem', align:'center'})">❀</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'✿', size:'2.5rem', align:'center'})">✿</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'❁', size:'2.5rem', align:'center'})">❁</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'🪽', size:'2.5rem', align:'center'})">🪽</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'🎀', size:'2.5rem', align:'center'})">🎀</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'🦋', size:'2.5rem', align:'center'})">🦋</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'🌷', size:'2.5rem', align:'center'})">🌷</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'🌸', size:'2.5rem', align:'center'})">🌸</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'💗', size:'2.5rem', align:'center'})">💗</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'💌', size:'2.5rem', align:'center'})">💌</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'⭐', size:'2.5rem', align:'center'})">⭐</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'☁️', size:'2.5rem', align:'center'})">☁️</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'🌙', size:'2.5rem', align:'center'})">🌙</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'🧸', size:'2.5rem', align:'center'})">🧸</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'🍰', size:'2.5rem', align:'center'})">🍰</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'🍡', size:'2.5rem', align:'center'})">🍡</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'🎁', size:'2.5rem', align:'center'})">🎁</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'🎉', size:'2.5rem', align:'center'})">🎉</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'🪄', size:'2.5rem', align:'center'})">🪄</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'🐱', size:'2.5rem', align:'center'})">🐱</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'🐰', size:'2.5rem', align:'center'})">🐰</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'🍒', size:'2.5rem', align:'center'})">🍒</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'🍓', size:'2.5rem', align:'center'})">🍓</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'🧁', size:'2.5rem', align:'center'})">🧁</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'✨', size:'2.5rem', align:'center'})">✨</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'💖', size:'2.5rem', align:'center'})">💖</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'💐', size:'2.5rem', align:'center'})">💐</div>
+                        
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'🍭', size:'2.5rem', align:'center'})">🍭</div>
+                        
+                    </div>
+                </div>
+
+        <!-- CENTER CANVAS INTERACTIVE DISPLAY -->
+        <div class="canvas-area">
+            <div class="gift-stage-frame" id="gift-stage" style="background: rgb(255, 240, 245); color: rgb(74, 62, 67);"><div class="gift-page"><div class="canvas-element">
+                            <div class="element-controls">
+                                <button class="btn-icon-tiny" onclick="appState.deleteElement(0)"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        <div contenteditable="true" style="font-family: &quot;Dancing Script&quot;, cursive; font-size: 2rem; text-align: center; color: rgb(255, 118, 156);">Happy Birthday! ♡</div></div><div class="canvas-element">
+                            <div class="element-controls">
+                                <button class="btn-icon-tiny" onclick="appState.deleteElement(1)"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        <div class="polaroid-frame">
+                            <div class="tape-effect"></div>
+                            <img src="https://images.unsplash.com/photo-1513151233558-d860c5398176?w=500" alt="Memory Photo">
+                            <div class="polaroid-caption">Memories together ♡</div>
+                        </div></div><div class="canvas-element">
+                            <div class="element-controls">
+                                <button class="btn-icon-tiny" onclick="appState.deleteElement(2)"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        <div contenteditable="true" style="font-family: Fredoka, cursive; font-size: 0.9rem; text-align: center; color: rgb(136, 136, 136);">Scroll atau geser ke halaman berikutnya ya! ✨</div></div><div class="canvas-element">
+                            <div class="element-controls">
+                                <button class="btn-icon-tiny" onclick="appState.deleteElement(3)" fdprocessedid="welxmb"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        <div contenteditable="true" style="font-family: Fredoka, cursive; font-size: 2.5rem; text-align: center; color: rgb(74, 62, 67);"><br></div></div><div class="canvas-element">
+                            <div class="element-controls">
+                                <button class="btn-icon-tiny" onclick="appState.deleteElement(4)"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        <div contenteditable="true" style="font-family: Fredoka, cursive; font-size: 2.5rem; text-align: center; color: rgb(74, 62, 67);">♡</div></div></div></div>
+
+            <!-- MULTI-PAGE NAVIGATION DOTS BAR -->
+            <div class="page-bar" id="page-bar"><div class="page-dot active">1</div><button class="btn-icon-tiny" fdprocessedid="lhexvc" style="background: var(--primary);"><i class="fa-solid fa-plus"></i></button></div>
+        </div>
+    </div>
 </div>
 
-<div class="app">
-  <!-- SIDEBAR EDITOR -->
-  <aside class="sidebar">
-    <div class="tabs">
-      <button class="active" onclick="switchTab(this, 'tab-main')">Utama</button>
-      <button onclick="switchTab(this, 'tab-theme')">Tema</button>
-      <button onclick="switchTab(this, 'tab-photos')">Foto</button>
-      <button onclick="switchTab(this, 'tab-games')">Games</button>
-      <button onclick="switchTab(this, 'tab-responses')">Balasan</button>
-    </div>
-
-    <div id="tab-main" class="pane active">
-      <div class="title">Pengaturan Utama</div>
-      <div class="card">
-        <label class="mini">Nama Penerima</label>
-        <input type="text" id="in-name" value="Kasih" oninput="updateContent()">
-        
-        <label class="mini">Judul Kado</label>
-        <input type="text" id="in-title" value="A Little Place Made For You ♡" oninput="updateContent()">
-        
-        <label class="mini">Pesan Pembuka</label>
-        <textarea id="in-msg" oninput="updateContent()">Selamat datang di tempat kecil yang sengaja dibuat khusus untuk merayakan senyummu hari ini!</textarea>
-      </div>
-    </div>
-
-    <div id="tab-theme" class="pane">
-      <div class="title">Warna & Tampilan</div>
-      <div class="card">
-        <div class="grid2">
-          <div>
-            <label class="mini">Warna Utama</label>
-            <input type="color" id="in-primary" value="#9b76a7" onchange="updateTheme()">
-          </div>
-          <div>
-            <label class="mini">Warna Latar</label>
-            <input type="color" id="in-bg" value="#fff7fb" onchange="updateTheme()">
-          </div>
+<!-- RECIPIENT UNBOXING OVERLAY MODE -->
+<div id="recipient-overlay" style="display: none;">
+    <div class="gift-box-wrapper" onclick="appState.triggerUnboxingAnimation()">
+        <div class="gift-box">
+            <div class="gift-bow"><i class="fa-solid fa-ribbon"></i></div>
         </div>
-      </div>
+        <div class="unboxing-text">Ada sesuatu untukmu... ♡</div>
+        <div style="font-size: 0.9rem; color: #888; margin-top: 5px;">[ Sentuh Kotak Kado Untuk Membuka ]</div>
     </div>
+</div>
 
-    <div id="tab-photos" class="pane">
-      <div class="title">Modul Foto</div>
-      <div class="card">
-        <label class="mini">URL Foto Polaroid</label>
-        <input type="text" id="in-photo" value="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=500" oninput="updateContent()">
-      </div>
-    </div>
-
-    <div id="tab-games" class="pane">
-      <div class="title">Pilihan Permainan</div>
-      <div class="library">
-        <button class="libbtn" onclick="triggerConfetti()">💖 Mainkan Konfeti</button>
-      </div>
-    </div>
-
-    <div id="tab-responses" class="pane">
-      <div class="title">Pesan Balasan</div>
-      <div class="card">
-        <p class="mini">Penerima dapat memberikan tanggapan balasan secara langsung dari tampilan kado ini.</p>
-      </div>
-    </div>
-  </aside>
-
-  <!-- PREVIEW / RECEIVER AREA -->
-  <main class="previewArea">
-    <div class="previewTop">
-      <span class="previewLabel">Mode Pratinjau Tampilan</span>
-      <button class="btn" onclick="toggleMobileView()">📱 Toggle Mobile/Desktop</button>
-    </div>
-
-    <div class="previewWrap" id="preview-wrap">
-      <div class="gift" id="gift-container">
+<!-- PUBLISH MODAL DIALOG -->
+<div class="modal-backdrop" id="publish-modal" style="display: none;">
+    <div class="modal-card">
+        <h3 style="color: var(--primary); margin-bottom: 10px;"><i class="fa-solid fa-circle-check"></i> Kado Berhasil Dipublish!</h3>
+        <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Bagikan link di bawah ini kepada seseorang yang spesial untuk memberikan kejutan digital.</p>
         
-        <!-- Floating Particles Layer -->
-        <div class="float" id="float-layer"></div>
+        <input type="text" id="share-link-input" readonly="" style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ccc; text-align: center; margin-bottom: 15px; background: #f9f9f9;">
+        
+        <div id="qrcode-container" style="display: flex; justify-content: center; margin-bottom: 15px;"></div>
 
-        <!-- Hero Section -->
-        <section class="hero">
-          <div class="eyebrow">A Special Gift For</div>
-          <h1 id="out-name">Kasih</h1>
-          <p id="out-msg">Selamat datang di tempat kecil yang sengaja dibuat khusus untuk merayakan senyummu hari ini!</p>
-          <button class="open" onclick="triggerConfetti()">✨ Buka Kejutannya ✨</button>
-        </section>
-
-        <!-- Dynamic Content Section -->
-        <section class="section">
-          <h2 id="out-title">A Little Place Made For You ♡</h2>
-          
-          <div class="block">
-            <div class="polaroid">
-              <img id="out-photo" src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=500" alt="Memory Photo">
-              <div class="hand" style="margin-top:8px;">Moment Terindah ♡</div>
-            </div>
-          </div>
-
-          <!-- Interactive Scratch Card -->
-          <div class="block">
-            <div class="scratch cover" onclick="this.classList.remove('cover')">
-              <div style="font-weight:700; color:var(--primary);">🎉 Kamu Mendapatkan Pelukan Hangat! 💖</div>
-            </div>
-          </div>
-
-          <!-- Interactive Response Box -->
-          <div class="block">
-            <div class="responseBox">
-              <h3>Kirim Balasan Untuknya 💌</h3>
-              <textarea placeholder="Tuliskan balasan bahagiamu di sini..."></textarea>
-              <div class="responseActions">
-                <button class="btn primary" onclick="alert('Terima kasih! Balasanmu telah terkirim ♡')">Kirim Balasan</button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <footer class="footer">
-          <p class="mini">Dibuat dengan kasih sayang melalui Kado by Visyaa ✨</p>
-        </footer>
-
-      </div>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button class="btn btn-primary" onclick="appState.copyShareLink()"><i class="fa-solid fa-copy"></i> Salin Link</button>
+            <button class="btn btn-secondary" onclick="appState.closePublishModal()">Tutup</button>
+        </div>
+        
+        <div style="margin-top: 15px; font-size: 0.8rem; color: #aaa;">
+            *Catatan Backend (Supabase Integration): Simpan parameter data kado ke URL/Database agar dapat diakses dari perangkat lain secara penuh.
+        </div>
     </div>
-  </main>
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    const isEditor = urlParams.get('mode') === 'editor';
-    const hashData = window.location.hash.substring(1);
+    /* ==========================================================================
+       DATA CATALOGS & DATABASE PRESETS (30+ Themes, Fonts, Emojis, Templates)
+       ========================================================================== */
 
-    // 1. Jika ada data editan di Hash URL, muat isinya ke dalam tampilan kado
-    if (hashData && hashData !== 'editor') {
-      try {
-        const decodedData = JSON.parse(decodeURIComponent(escape(atob(hashData))));
-        loadDataToPage(decodedData);
-      } catch (e) {
-        console.warn("Gagal memuat data editan dari link, menampilkan default.", e);
-      }
-    }
+    const CATALOG = {
+        themes: [
+            { id: 'pink_sweet', name: 'Sweet Pink', bg: '#fff0f5', primary: '#ff769c', card: '#ffffff', text: '#4a3e43' },
+            { id: 'purple_dream', name: 'Purple Dream', bg: '#f3e8ff', primary: '#a855f7', card: '#ffffff', text: '#3b0764' },
+            { id: 'pastel_soft', name: 'Pastel Soft', bg: '#f0fdf4', primary: '#4ade80', card: '#ffffff', text: '#14532d' },
+            { id: 'romantic_rose', name: 'Romantic Rose', bg: '#fff1f2', primary: '#f43f5e', card: '#ffffff', text: '#881337' },
+            { id: 'minimal_white', name: 'Minimalist', bg: '#fafafa', primary: '#18181b', card: '#ffffff', text: '#09090b' },
+            { id: 'vintage_paper', name: 'Vintage Paper', bg: '#fef3c7', primary: '#d97706', card: '#fffbeb', text: '#78350f' },
+            { id: 'retro_vibes', name: 'Retro Vibes', bg: '#ffedd5', primary: '#ea580c', card: '#ffffff', text: '#7c2d12' },
+            { id: 'elegant_gold', name: 'Elegant Night', bg: '#0f172a', primary: '#fbbf24', card: '#1e293b', text: '#f8fafc' },
+            { id: 'dark_gothic', name: 'Dark Aesthetic', bg: '#18181b', primary: '#ec4899', card: '#27272a', text: '#f4f4f5' },
+            { id: 'dreamy_cloud', name: 'Dreamy Sky', bg: '#e0f2fe', primary: '#38bdf8', card: '#ffffff', text: '#0369a1' },
+            { id: 'floral_spring', name: 'Floral Garden', bg: '#fdf2f8', primary: '#f472b6', card: '#ffffff', text: '#831843' },
+            { id: 'ocean_breeze', name: 'Ocean Breeze', bg: '#ecfeff', primary: '#06b6d4', card: '#ffffff', text: '#164e63' },
+            { id: 'coffee_latte', name: 'Warm Coffee', bg: '#f5f5f4', primary: '#78350f', card: '#ffffff', text: '#292524' },
+            { id: 'kawaii_yellow', name: 'Kawaii Sunshine', bg: '#fef9c3', primary: '#eab308', card: '#ffffff', text: '#713f12' },
+            { id: 'girly_lavender', name: 'Soft Lavender', bg: '#faf5ff', primary: '#c084fc', card: '#ffffff', text: '#581c87' },
+            { id: 'boyish_blue', name: 'Cool Boyish', bg: '#eff6ff', primary: '#3b82f6', card: '#ffffff', text: '#1e3a8a' },
+            { id: 'neutral_sand', name: 'Neutral Sand', bg: '#f5f5f0', primary: '#a3a380', card: '#ffffff', text: '#404030' },
+            { id: 'warm_sunset', name: 'Warm Sunset', bg: '#fff7ed', primary: '#f97316', card: '#ffffff', text: '#7c2d12' },
+            { id: 'cold_mint', name: 'Cold Mint', bg: '#f0fdfa', primary: '#14b8a6', card: '#ffffff', text: '#134e4a' },
+            { id: 'monochrome', name: 'Monochrome', bg: '#e5e5e5', primary: '#404040', card: '#ffffff', text: '#171717' },
+            { id: 'night_sky', name: 'Starry Night', bg: '#0b132b', primary: '#6fffe9', card: '#1c2541', text: '#ffffff' },
+            { id: 'galaxy_purple', name: 'Galaxy Magic', bg: '#240046', primary: '#9d4edd', card: '#3c096c', text: '#e0aaff' },
+            { id: 'cherry_blossom', name: 'Sakura Blossom', bg: '#fff5f7', primary: '#ffb7c5', card: '#ffffff', text: '#5c3a42' },
+            { id: 'matcha_green', name: 'Matcha Tea', bg: '#f4f7f4', primary: '#87a96b', card: '#ffffff', text: '#2d3b2d' },
+            { id: 'bubblegum', name: 'Pop Bubblegum', bg: '#ffe5ec', primary: '#ff2a85', card: '#ffffff', text: '#4a0e2e' },
+            { id: 'cyberpunk', name: 'Neon Cyber', bg: '#0d0221', primary: '#00f5d4', card: '#0f0826', text: '#f72585' },
+            { id: 'scrapbook_craft', name: 'Paper Craft', bg: '#f4ebd9', primary: '#b07d62', card: '#fffbf4', text: '#4a3b32' },
+            { id: 'berry_cute', name: 'Berry Cute', bg: '#fce7f3', primary: '#db2777', card: '#ffffff', text: '#701a75' },
+            { id: 'fairy_tale', name: 'Fairy Tale', bg: '#fdf4ff', primary: '#f0abfc', card: '#ffffff', text: '#701a75' },
+            { id: 'butter_yellow', name: 'Soft Butter', bg: '#fffbeb', primary: '#fde047', card: '#ffffff', text: '#713f12' }
+        ],
 
-    // 2. Jika bukan dalam mode editor, sembunyikan sidebar & masuk Mode Penerima
-    if (!isEditor) {
-      document.body.classList.add('receiver-mode');
-    }
+        fonts: [
+            { name: 'Fredoka (Cute Modern)', family: "'Fredoka', cursive" },
+            { name: 'Caveat (Handwriting)', family: "'Caveat', cursive" },
+            { name: 'Dancing Script (Romantic)', family: "'Dancing Script', cursive" },
+            { name: 'Indie Flower (Playful)', family: "'Indie Flower', cursive" },
+            { name: 'Gaegu (Kawaii Doodle)', family: "'Gaegu', cursive" },
+            { name: 'Shantell Sans (Informal)', family: "'Shantell Sans', cursive" },
+            { name: 'Press Start 2P (Pixel Retro)', family: "'Press Start 2P', cursive" },
+            { name: 'Playfair Display (Elegant Serif)', family: "'Playfair Display', serif" },
+            { name: 'Poppins (Clean Modern)', family: "'Poppins', sans-serif" }
+        ],
 
-    initFloatingParticles();
-  });
+        emojis: [
+            '♡', '♥', 'ღ', 'ꨄ', '୨୧', '꒰ა ♡ ໒꒱', '✦', '✧', '⋆', '˚', '𐙚', '❀', '✿', '❁', 
+            '🪽', '🎀', '🦋', '🌷', '🌸', '💗', '💌', '⭐', '☁️', '🌙', '🧸', '🍰', '🍡', 
+            '🎁', '🎉', '🪄', '🐱', '🐰', '🍒', '🍓', '🧁', '✨', '💖', '💐', '🍭'
+        ],
 
-  function switchTab(btn, tabId) {
-    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
-    
-    btn.classList.add('active');
-    document.getElementById(tabId).classList.add('active');
-  }
+        photoTemplates: [
+            { id: 'single_polaroid', name: 'Single Polaroid', desc: 'Satu foto gaya kamera instan dengan caption' },
+            { id: 'double_polaroid', name: 'Double Polaroid Stacked', desc: 'Dua foto berjejer bertumpuk aesthetic' },
+            { id: 'photo_strip', name: '4-Grid Photo Strip', desc: 'Strip foto panjang ala photo booth' },
+            { id: 'scrapbook_tape', name: 'Scrapbook Photo & Tape', desc: 'Foto vintage dengan selotip kertas' }
+        ],
 
-  function updateContent() {
-    const name = document.getElementById('in-name').value;
-    const title = document.getElementById('in-title').value;
-    const msg = document.getElementById('in-msg').value;
-    const photo = document.getElementById('in-photo').value;
+        letters: [
+            { id: 'envelope_magic', name: 'Surat Dalam Amplop', text: 'Hai manis... Ada pesan singkat yang ingin kukirimkan padamu. Terima kasih sudah selalu ada di setiap momen berharga!' },
+            { id: 'vintage_scroll', name: 'Surat Vintage Paper', text: 'Di hari yang spesial ini, semoga semua impianmu tercapai dan kebahagiaan selalu menyertai setiap langkahmu.' }
+        ],
 
-    if(name) document.getElementById('out-name').innerText = name;
-    if(title) document.getElementById('out-title').innerText = title;
-    if(msg) document.getElementById('out-msg').innerText = msg;
-    if(photo) document.getElementById('out-photo').src = photo;
-  }
-
-  function updateTheme() {
-    const primary = document.getElementById('in-primary').value;
-    const bg = document.getElementById('in-bg').value;
-
-    document.documentElement.style.setProperty('--primary', primary);
-    document.documentElement.style.setProperty('--bg', bg);
-  }
-
-  function toggleMobileView() {
-    document.getElementById('preview-wrap').classList.toggle('mobile');
-  }
-
-  function triggerConfetti() {
-    if (typeof confetti === 'function') {
-      confetti({
-        particleCount: 80,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
-    }
-  }
-
-  // FUNGSI UNTUK MERANGKUM EDITAN JADI LINK PENERIMA
-  function copyNetlifyLink() {
-    const giftData = {
-      name: document.getElementById('in-name').value,
-      title: document.getElementById('in-title').value,
-      msg: document.getElementById('in-msg').value,
-      photo: document.getElementById('in-photo').value,
-      primary: document.getElementById('in-primary').value,
-      bg: document.getElementById('in-bg').value
+        games: [
+            { id: 'quiz_love', name: 'Mini Quiz: Seberapa Tahu Kamu?', type: 'quiz' },
+            { id: 'lucky_gift', name: 'Pilih Kotak Keberuntungan', type: 'choice' },
+            { id: 'tap_hearts', name: 'Tap 10 Hati Terbang', type: 'clicker' }
+        ]
     };
 
-    // Encode data ke Base64 aman
-    const encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(giftData))));
-    const receiverUrl = window.location.origin + window.location.pathname + '#' + encodedData;
+    /* ==========================================================================
+       APP STATE MANAGEMENT ENGINE
+       ========================================================================== */
 
-    navigator.clipboard.writeText(receiverUrl).then(() => {
-      alert("✨ Link kado editan Anda berhasil disalin!\n\nKirimkan link ini ke penerima agar mereka bisa melihat kado yang sudah Anda buat:\n\n" + receiverUrl);
-    });
-  }
+    class GiftAppEngine {
+        constructor() {
+            // Main Gift Document Structure Data Model
+            this.giftData = {
+                title: "Kado Spesial Untukmu",
+                theme: CATALOG.themes[0],
+                font: CATALOG.fonts[0].family,
+                animationEffect: 'hearts',
+                pages: [
+                    {
+                        id: 'page_1',
+                        elements: [
+                            { type: 'text', text: 'Happy Birthday! ♡', font: "'Dancing Script', cursive", size: '2rem', align: 'center', color: '#ff769c' },
+                            { type: 'photo', template: 'single_polaroid', url: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?w=500', caption: 'Memories together ♡' },
+                            { type: 'text', text: 'Scroll atau geser ke halaman berikutnya ya! ✨', font: "'Fredoka', cursive", size: '0.9rem', align: 'center', color: '#888888' }
+                        ]
+                    }
+                ]
+            };
 
-  function loadDataToPage(data) {
-    if (data.name) {
-      document.getElementById('out-name').innerText = data.name;
-      document.getElementById('in-name').value = data.name;
-    }
-    if (data.title) {
-      document.getElementById('out-title').innerText = data.title;
-      document.getElementById('in-title').value = data.title;
-    }
-    if (data.msg) {
-      document.getElementById('out-msg').innerText = data.msg;
-      document.getElementById('in-msg').value = data.msg;
-    }
-    if (data.photo) {
-      document.getElementById('out-photo').src = data.photo;
-      document.getElementById('in-photo').value = data.photo;
-    }
-    if (data.primary) {
-      document.documentElement.style.setProperty('--primary', data.primary);
-      document.getElementById('in-primary').value = data.primary;
-    }
-    if (data.bg) {
-      document.documentElement.style.setProperty('--bg', data.bg);
-      document.getElementById('in-bg').value = data.bg;
-    }
-  }
+            this.currentPageIndex = 0;
+            this.activeTab = 'theme';
+            this.isRecipientView = false;
+            this.particleInterval = null;
+        }
 
-  function initFloatingParticles() {
-    const layer = document.getElementById('float-layer');
-    const icons = ['🌸', '✨', '💖', '💫', '☁️'];
-    
-    for (let i = 0; i < 15; i++) {
-      const p = document.createElement('div');
-      p.className = 'p';
-      p.innerText = icons[Math.floor(Math.random() * icons.length)];
-      p.style.left = Math.random() * 100 + '%';
-      p.style.animationDuration = (Math.random() * 5 + 5) + 's';
-      p.style.animationDelay = (Math.random() * 5) + 's';
-      p.style.fontSize = (Math.random() * 12 + 16) + 'px';
-      layer.appendChild(p);
+        init() {
+            this.renderSidebarPanel();
+            this.renderCanvasPage();
+            this.renderPageBar();
+            this.initParticleEngine();
+            this.checkURLParams();
+        }
+
+        /* Check if page accessed in Recipient Link Mode */
+        checkURLParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('mode') === 'view') {
+                this.enterRecipientView();
+            }
+        }
+
+        switchTab(tabName) {
+            this.activeTab = tabName;
+            document.querySelectorAll('.sidebar-nav .nav-item').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            this.renderSidebarPanel();
+        }
+
+        /* Set Active Theme */
+        setTheme(themeObj) {
+            this.giftData.theme = themeObj;
+            document.documentElement.style.setProperty('--bg-primary', themeObj.bg);
+            document.documentElement.style.setProperty('--primary', themeObj.primary);
+            document.documentElement.style.setProperty('--text-color', themeObj.text);
+            this.renderCanvasPage();
+        }
+
+        /* Render Current Page Elements on Stage Canvas */
+        renderCanvasPage() {
+            const stage = document.getElementById('gift-stage');
+            stage.style.background = this.giftData.theme.bg;
+            stage.style.color = this.giftData.theme.text;
+            stage.innerHTML = '';
+
+            const pageData = this.giftData.pages[this.currentPageIndex];
+            const pageDiv = document.createElement('div');
+            pageDiv.className = 'gift-page';
+
+            if (!pageData || pageData.elements.length === 0) {
+                pageDiv.innerHTML = `<div style="text-align:center; margin-top:50%; color:#aaa; font-size:0.9rem;">Halaman Kosong.<br>Tambahkan teks, foto, atau game dari menu di sebelah kiri!</div>`;
+            } else {
+                pageData.elements.forEach((el, idx) => {
+                    const elWrapper = document.createElement('div');
+                    elWrapper.className = 'canvas-element';
+                    
+                    // Add control buttons if in Editor Mode
+                    if (!this.isRecipientView) {
+                        elWrapper.innerHTML = `
+                            <div class="element-controls">
+                                <button class="btn-icon-tiny" onclick="appState.deleteElement(${idx})"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        `;
+                    }
+
+                    // Render Element Content by Type
+                    if (el.type === 'text') {
+                        const txtBox = document.createElement('div');
+                        txtBox.style.fontFamily = el.font || appState.giftData.font;
+                        txtBox.style.fontSize = el.size || '1rem';
+                        txtBox.style.textAlign = el.align || 'left';
+                        txtBox.style.color = el.color || appState.giftData.theme.text;
+                        txtBox.innerText = el.text;
+                        if(!appState.isRecipientView) {
+                            txtBox.contentEditable = true;
+                            txtBox.onblur = (e) => { el.text = e.target.innerText; };
+                        }
+                        elWrapper.appendChild(txtBox);
+                    } else if (el.type === 'photo') {
+                        const photoDiv = document.createElement('div');
+                        photoDiv.className = 'polaroid-frame';
+                        photoDiv.innerHTML = `
+                            <div class="tape-effect"></div>
+                            <img src="${el.url}" alt="Memory Photo">
+                            <div class="polaroid-caption">${el.caption || ''}</div>
+                        `;
+                        elWrapper.appendChild(photoDiv);
+                    } else if (el.type === 'letter') {
+                        const letterDiv = document.createElement('div');
+                        letterDiv.className = 'envelope-container';
+                        letterDiv.innerHTML = `
+                            <div style="text-align:center; font-weight:bold; margin-bottom:8px; color:var(--primary);"><i class="fa-solid fa-envelope"></i> Surat Untukmu</div>
+                            <div>${el.text}</div>
+                        `;
+                        elWrapper.appendChild(letterDiv);
+                    } else if (el.type === 'game') {
+                        const gameDiv = document.createElement('div');
+                        gameDiv.className = 'game-box';
+                        gameDiv.innerHTML = `
+                            <div style="font-weight:600; font-size:1rem; margin-bottom:10px;"><i class="fa-solid fa-gamepad"></i> Mini Game: Tebak Kesukaanku</div>
+                            <p style="font-size:0.85rem; color:#666; margin-bottom:10px;">Mana makanan favorit pembuat kado ini?</p>
+                            <div class="game-options">
+                                <button class="game-btn" onclick="confetti(); alert('Benar sekali! 🎉')">A. Cokelat / Ice Cream 🍨</button>
+                                <button class="game-btn" onclick="alert('Tetot! Coba lagi 😄')">B. Sayuran Hijau 🥦</button>
+                            </div>
+                        `;
+                        elWrapper.appendChild(gameDiv);
+                    }
+
+                    pageDiv.appendChild(elWrapper);
+                });
+            }
+
+            stage.appendChild(pageDiv);
+        }
+
+        /* Add New Canvas Element */
+        addElement(elementObj) {
+            this.giftData.pages[this.currentPageIndex].elements.push(elementObj);
+            this.renderCanvasPage();
+        }
+
+        deleteElement(index) {
+            this.giftData.pages[this.currentPageIndex].elements.splice(index, 1);
+            this.renderCanvasPage();
+        }
+
+        /* Page Operations */
+        addPage() {
+            const newId = 'page_' + (this.giftData.pages.length + 1);
+            this.giftData.pages.push({ id: newId, elements: [] });
+            this.currentPageIndex = this.giftData.pages.length - 1;
+            this.renderCanvasPage();
+            this.renderPageBar();
+        }
+
+        switchPage(index) {
+            this.currentPageIndex = index;
+            this.renderCanvasPage();
+            this.renderPageBar();
+        }
+
+        renderPageBar() {
+            const pageBar = document.getElementById('page-bar');
+            pageBar.innerHTML = '';
+            this.giftData.pages.forEach((_, idx) => {
+                const dot = document.createElement('div');
+                dot.className = `page-dot ${idx === this.currentPageIndex ? 'active' : ''}`;
+                dot.innerText = idx + 1;
+                dot.onclick = () => this.switchPage(idx);
+                pageBar.appendChild(dot);
+            });
+
+            const addBtn = document.createElement('button');
+            addBtn.className = 'btn-icon-tiny';
+            addBtn.style.background = 'var(--primary)';
+            addBtn.innerHTML = '<i class="fa-solid fa-plus"></i>';
+            addBtn.onclick = () => this.addPage();
+            pageBar.appendChild(addBtn);
+        }
+
+        /* Render Dynamic Controls in Sidebar Panel */
+        renderSidebarPanel() {
+            const panel = document.getElementById('sidebar-panel');
+            panel.innerHTML = '';
+
+            if (this.activeTab === 'theme') {
+                panel.innerHTML = `
+                    <div class="panel-title">Pilih Tema Kado</div>
+                    <div class="theme-grid">
+                        ${CATALOG.themes.map(t => `
+                            <div class="theme-card" style="background:${t.bg}; color:${t.text};" onclick="appState.setTheme(CATALOG.themes.find(x => x.id === '${t.id}'))">
+                                <span class="theme-title">${t.name}</span>
+                                <div style="width:18px; height:18px; border-radius:50%; background:${t.primary}; align-self:flex-end;"></div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (this.activeTab === 'font') {
+                panel.innerHTML = `
+                    <div class="panel-title">Tambah Teks & Font</div>
+                    <button class="btn btn-primary" style="width:100%;" onclick="appState.addElement({type:'text', text:'Klik untuk edit teks ini ♡', font:'Fredoka', size:'1.1rem', align:'center'})">+ Tambah Blok Teks</button>
+                    <div style="margin-top:15px;" class="panel-title">Gaya Font Teks</div>
+                    <div class="font-list">
+                        ${CATALOG.fonts.map(f => `
+                            <div class="font-item" style="font-family:${f.family}" onclick="appState.giftData.font='${f.family}'; appState.renderCanvasPage();">
+                                <span>${f.name}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (this.activeTab === 'emoji') {
+                panel.innerHTML = `
+                    <div class="panel-title">Stiker & Emoji Library</div>
+                    <input type="text" class="search-box" placeholder="Cari simbol / emoji..." onkeyup="appState.filterEmojis(this.value)">
+                    <div class="emoji-grid" id="emoji-grid-box">
+                        ${CATALOG.emojis.map(e => `
+                            <div class="emoji-item" onclick="appState.addElement({type:'text', text:'${e}', size:'2.5rem', align:'center'})">${e}</div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (this.activeTab === 'photo') {
+                panel.innerHTML = `
+                    <div class="panel-title">Template & Layout Foto</div>
+                    <div class="photo-template-grid">
+                        ${CATALOG.photoTemplates.map(p => `
+                            <div class="photo-card-preview" onclick="appState.triggerPhotoUpload()">
+                                <i class="fa-solid fa-camera-retro" style="font-size:1.5rem; color:var(--primary);"></i>
+                                <div style="font-size:0.8rem; font-weight:600; margin-top:5px;">${p.name}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <input type="file" id="photo-file-input" accept="image/*" style="display:none;" onchange="appState.handlePhotoUpload(event)">
+                `;
+            } else if (this.activeTab === 'letter') {
+                panel.innerHTML = `
+                    <div class="panel-title">Template Surat Interaktif</div>
+                    <div style="display:flex; flex-direction:column; gap:10px;">
+                        ${CATALOG.letters.map(l => `
+                            <div class="template-list-item" onclick="appState.addElement({type:'letter', text:'${l.text}'})">
+                                <div class="template-icon"><i class="fa-solid fa-envelope"></i></div>
+                                <div>
+                                    <div style="font-weight:600; font-size:0.9rem;">${l.name}</div>
+                                    <div style="font-size:0.75rem; color:#888;">Klik untuk memasukkan surat</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (this.activeTab === 'game') {
+                panel.innerHTML = `
+                    <div class="panel-title">Game Library</div>
+                    <div style="display:flex; flex-direction:column; gap:10px;">
+                        ${CATALOG.games.map(g => `
+                            <div class="template-list-item" onclick="appState.addElement({type:'game', gameId:'${g.id}'})">
+                                <div class="template-icon" style="background:#a855f7;"><i class="fa-solid fa-gamepad"></i></div>
+                                <div>
+                                    <div style="font-weight:600; font-size:0.9rem;">${g.name}</div>
+                                    <div style="font-size:0.75rem; color:#888;">Interaktif Mini Game</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (this.activeTab === 'animation') {
+                panel.innerHTML = `
+                    <div class="panel-title">Efek Background & Animasi</div>
+                    <div class="font-list">
+                        <div class="font-item" onclick="appState.giftData.animationEffect='hearts';">Hati Melayang ♡</div>
+                        <div class="font-item" onclick="appState.giftData.animationEffect='sparkles';">Sparkles & Glitter ✨</div>
+                    </div>
+                `;
+            } else if (this.activeTab === 'music') {
+                panel.innerHTML = `
+                    <div class="panel-title">Musik Background</div>
+                    <p style="font-size:0.85rem; color:#666;">Pilih audio / musik kado:</p>
+                    <button class="btn btn-secondary" style="width:100%; margin-top:10px;"><i class="fa-solid fa-upload"></i> Upload File Audio (MP3)</button>
+                `;
+            }
+        }
+
+        filterEmojis(query) {
+            const grid = document.getElementById('emoji-grid-box');
+            const filtered = CATALOG.emojis.filter(e => e.includes(query));
+            grid.innerHTML = filtered.map(e => `
+                <div class="emoji-item" onclick="appState.addElement({type:'text', text:'${e}', size:'2.5rem', align:'center'})">${e}</div>
+            `).join('');
+        }
+
+        triggerPhotoUpload() {
+            document.getElementById('photo-file-input').click();
+        }
+
+        handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.addElement({
+                        type: 'photo',
+                        url: e.target.result,
+                        caption: 'Spesial Moment ♡'
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        /* Particle System Engine for Floating Hearts & Sparkles */
+        initParticleEngine() {
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            window.onresize = () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            };
+
+            const particles = Array.from({ length: 25 }, () => ({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                size: Math.random() * 14 + 10,
+                speedY: Math.random() * 1 + 0.5,
+                opacity: Math.random() * 0.7 + 0.3,
+                symbol: ['♡', '✨', '🌸', '💖'][Math.floor(Math.random() * 4)]
+            }));
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, width, height);
+                particles.forEach(p => {
+                    p.y -= p.speedY;
+                    if (p.y < -20) p.y = height + 20;
+                    ctx.globalAlpha = p.opacity;
+                    ctx.font = `${p.size}px sans-serif`;
+                    ctx.fillText(p.symbol, p.x, p.y);
+                });
+                requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
+        }
+
+        /* Preview Mode Toggle */
+        togglePreview() {
+            this.isRecipientView = !this.isRecipientView;
+            const overlay = document.getElementById('recipient-overlay');
+            if (this.isRecipientView) {
+                overlay.style.display = 'flex';
+            } else {
+                overlay.style.display = 'none';
+            }
+            this.renderCanvasPage();
+        }
+
+        /* Unboxing Animation trigger */
+        triggerUnboxingAnimation() {
+            const overlay = document.getElementById('recipient-overlay');
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            overlay.style.transition = 'opacity 0.8s ease';
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                overlay.style.opacity = '1';
+            }, 800);
+        }
+
+        saveDraft() {
+            localStorage.setItem('kado_digital_draft', JSON.stringify(this.giftData));
+            alert('Draft kado berhasil disimpan secara lokal! 💾');
+        }
+
+        openPublishModal() {
+            document.getElementById('publish-modal').style.display = 'flex';
+            const shareUrl = window.location.origin + window.location.pathname + '?mode=view';
+            document.getElementById('share-link-input').value = shareUrl;
+
+            // Generate QR Code
+            const qrBox = document.getElementById('qrcode-container');
+            qrBox.innerHTML = '';
+            new QRCode(qrBox, { text: shareUrl, width: 120, height: 120 });
+        }
+
+        closePublishModal() {
+            document.getElementById('publish-modal').style.display = 'none';
+        }
+
+        copyShareLink() {
+            const copyText = document.getElementById('share-link-input');
+            copyText.select();
+            document.execCommand('copy');
+            alert('Link kado berhasil disalin ke clipboard! 📋');
+        }
+
+        enterRecipientView() {
+            this.isRecipientView = true;
+            document.getElementById('main-navbar').style.display = 'none';
+            document.getElementById('sidebar-panel').style.display = 'none';
+            document.querySelector('.sidebar-nav').style.display = 'none';
+            document.getElementById('recipient-overlay').style.display = 'flex';
+            this.renderCanvasPage();
+        }
     }
-  }
+
+    // Initialize Global App State Instance
+    const appState = new GiftAppEngine();
+    window.onload = () => appState.init();
 </script>
-</body>
-</html>
+
+<span id="PING_IFRAME_FORM_DETECTION" style="display: none;"></span></body></html>
